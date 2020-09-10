@@ -1,0 +1,18 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace HolidayMakerAPI.Models
+{
+    public class Reservation
+    {
+        public int ReservationId { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+        public decimal TotalPrice { get; set; }
+        public List<Addon> Addons { get; set; }
+        public Home Home { get; set; }
+        public User User { get; set; }
+    }
+}
