@@ -4,6 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using HolidayMakerAPI;
+<<<<<<< HEAD
+using HolidayMakerAPI.Models;
+=======
+>>>>>>> dev
 
 namespace HolidayMakerAPI.Data
 {
@@ -14,8 +18,21 @@ namespace HolidayMakerAPI.Data
         {
         }
 
+<<<<<<< HEAD
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ReservationAddon>().HasKey(ra => new { ra.AddonId, ra.ReservationId });
+        }
+
+        public DbSet<HolidayMakerAPI.User> User { get; set; }
+
+        public DbSet<HolidayMakerAPI.Models.Reservation> Reservation { get; set; }
+
+        public DbSet<HolidayMakerAPI.ReservationAddon> ReservationAddon { get; set; }
+=======
         public DbSet<HolidayMakerAPI.Home> Home { get; set; }
 
         public DbSet<HolidayMakerAPI.Addon> Addon { get; set; }
+>>>>>>> dev
     }
 }
