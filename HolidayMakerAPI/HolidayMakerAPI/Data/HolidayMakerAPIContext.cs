@@ -15,5 +15,7 @@ namespace HolidayMakerAPI.Data
         }
 
         public DbSet<HolidayMakerAPI.Home> Home { get; set; }
+
+        public DbSet<HolidayMakerAPI.Addon> Addon { get; set; }
     }
 }
