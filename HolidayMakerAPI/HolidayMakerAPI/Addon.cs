@@ -12,5 +12,6 @@ namespace HolidayMakerAPI
         [StringLength(50)]
         public string AddonType { get; set; }
         public decimal Price { get; set; }
+        public List<ReservationAddon> ReservationAddons { get; set; }
     }
 }

@@ -15,8 +15,15 @@ namespace HolidayMakerAPI.Data
         {
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ReservationAddon>().HasKey(ra => new { ra.AddonId, ra.ReservationId });
+        }
+
         public DbSet<HolidayMakerAPI.User> User { get; set; }
 
         public DbSet<HolidayMakerAPI.Models.Reservation> Reservation { get; set; }
+
+        public DbSet<HolidayMakerAPI.ReservationAddon> ReservationAddon { get; set; }
     }
 }

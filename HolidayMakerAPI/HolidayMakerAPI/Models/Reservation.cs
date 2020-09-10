@@ -14,5 +14,6 @@ namespace HolidayMakerAPI.Models
         public List<Addon> Addons { get; set; }
         public Home Home { get; set; }
         public User User { get; set; }
+        public List<ReservationAddon> ReservationAddons { get; set; }
     }
 }
