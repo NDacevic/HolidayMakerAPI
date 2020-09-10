@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30413.136
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HolidayMakerAPI", "HolidayMakerAPI\HolidayMakerAPI.csproj", "{BAC04765-9136-4A88-97D6-2B28E2F43F15}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HolidayMakerAPI", "HolidayMakerAPI\HolidayMakerAPI.csproj", "{AE4ADD55-DC62-433F-ABFC-2CABC5FE778A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{BAC04765-9136-4A88-97D6-2B28E2F43F15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BAC04765-9136-4A88-97D6-2B28E2F43F15}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BAC04765-9136-4A88-97D6-2B28E2F43F15}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BAC04765-9136-4A88-97D6-2B28E2F43F15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE4ADD55-DC62-433F-ABFC-2CABC5FE778A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE4ADD55-DC62-433F-ABFC-2CABC5FE778A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE4ADD55-DC62-433F-ABFC-2CABC5FE778A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE4ADD55-DC62-433F-ABFC-2CABC5FE778A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {602AC5DB-A8B9-423C-A8B6-963F685A3091}
+		SolutionGuid = {2127FDFC-F930-4008-BCC5-D9116CE05FF9}
 	EndGlobalSection
 EndGlobal
