@@ -48,7 +48,7 @@ namespace HolidayMakerAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(int id, User user)
         {
-            if (id != user.UserID)
+            if (id != user.UserId)
             {
                 return BadRequest();
             }
@@ -83,7 +83,7 @@ namespace HolidayMakerAPI.Controllers
             _context.User.Add(user);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUser", new { id = user.UserID }, user);
+            return CreatedAtAction("GetUser", new { id = user.UserId }, user);
         }
 
         // DELETE: api/Users/5
@@ -104,7 +104,7 @@ namespace HolidayMakerAPI.Controllers
 
         private bool UserExists(int id)
         {
-            return _context.User.Any(e => e.UserID == id);
+            return _context.User.Any(e => e.UserId == id);
         }
     }
 }
