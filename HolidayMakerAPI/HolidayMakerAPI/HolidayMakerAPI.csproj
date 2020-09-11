@@ -5,10 +5,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20200911073942_1.0.cs" />
+    <Compile Remove="Migrations\20200911073942_1.0.Designer.cs" />
+    <Compile Remove="Migrations\20200911075824_1.0.cs" />
+    <Compile Remove="Migrations\20200911075824_1.0.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="RegionTemplates.txt" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="3.1.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.7">

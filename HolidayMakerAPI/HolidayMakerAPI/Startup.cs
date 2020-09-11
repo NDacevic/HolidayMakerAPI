@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Serialization;
 using HolidayMakerAPI.Data;
 
 namespace HolidayMakerAPI
@@ -27,10 +28,12 @@ namespace HolidayMakerAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            
 
             services.AddDbContext<HolidayMakerAPIContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("HolidayMakerAPIContext")));
+                    options.UseSqlServer(Configuration.GetConnectionString("HolidayMakerDbConnector")));
+            services.AddControllers().AddNewtonsoftJson();
+            services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

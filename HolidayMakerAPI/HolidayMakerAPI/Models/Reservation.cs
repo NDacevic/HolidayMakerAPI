@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,6 +12,7 @@ namespace HolidayMakerAPI.Models
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public decimal TotalPrice { get; set; }
+        [NotMapped]
         public List<Addon> Addons { get; set; }
         public Home Home { get; set; }
         public User User { get; set; }
