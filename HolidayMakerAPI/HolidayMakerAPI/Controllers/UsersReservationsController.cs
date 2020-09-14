@@ -23,26 +23,35 @@ namespace HolidayMakerAPI.Controllers
         }
 
         // GET: api/UsersReservations
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Reservation>>> GetUserReservations(int id)
+        [HttpGet("{id}")]
+        public async Task<IEnumerable<Reservation>> GetUserReservations(int id)
         {
             //TODO: Check table of reservations and get all reservations linked with the user id
-            return await _context.Reservation.ToListAsync();
+            var userReservations = _context.Reservation.Where(r => r.User.UserId == id)
+                .Include(h => h.Home).ToList();
+                
+            foreach(Reservation r in userReservations)
+            {
+                r.HomeId = r.Home.HomeId;
+            }
+          
+            //return await _context.Reservation.ToListAsync();
+            return userReservations;
         }
 
         // GET: api/UsersReservations/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(int id)
-        {
-            var user = await _context.User.FindAsync(id);
+        //[HttpGet("{id}")]
+        //public async Task<ActionResult<User>> GetUser(int id)
+        //{
+        //    var user = await _context.User.FindAsync(id);
 
-            if (user == null)
-            {
-                return NotFound();
-            }
+        //    if (user == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return user;
-        }
+        //    return user;
+        //}
 
         // PUT: api/UsersReservations/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
