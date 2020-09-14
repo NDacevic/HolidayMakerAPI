@@ -25,7 +25,14 @@ namespace HolidayMakerAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Addon>>> GetAddon()
         {
-            return await _context.Addon.ToListAsync();
+            try
+            {
+                return await _context.Addon.ToListAsync();
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         // GET: api/Addons/5
