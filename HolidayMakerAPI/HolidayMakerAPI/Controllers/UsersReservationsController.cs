@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HolidayMakerAPI;
 using HolidayMakerAPI.Data;
+using HolidayMakerAPI.Models;
 
 namespace HolidayMakerAPI.Controllers
 {
@@ -23,9 +24,10 @@ namespace HolidayMakerAPI.Controllers
 
         // GET: api/UsersReservations
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUser()
+        public async Task<ActionResult<IEnumerable<Reservation>>> GetUserReservations(int id)
         {
-            return await _context.User.ToListAsync();
+            //TODO: Check table of reservations and get all reservations linked with the user id
+            return await _context.Reservation.ToListAsync();
         }
 
         // GET: api/UsersReservations/5
