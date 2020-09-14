@@ -12,6 +12,7 @@ namespace HolidayMakerAPI.Models
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public decimal TotalPrice { get; set; }
+        public int NumberOfGuests { get; set; }
         [NotMapped]
         public List<Addon> Addons { get; set; }
         public Home Home { get; set; }
