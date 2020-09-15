@@ -35,7 +35,7 @@ namespace HolidayMakerAPI.Controllers
                 r.HomeId = r.Home.HomeId;
             }
           
-            //return await _context.Reservation.ToListAsync();
+           
             return userReservations;
         }
 

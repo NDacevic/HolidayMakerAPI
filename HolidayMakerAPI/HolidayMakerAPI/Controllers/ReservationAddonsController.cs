@@ -22,25 +22,38 @@ namespace HolidayMakerAPI.Controllers
         }
 
         // GET: api/ReservationAddons
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<ReservationAddon>>> GetReservationAddon()
+        [HttpGet("{id}")]
+        public async Task<ActionResult<IEnumerable<Addon>>> GetReservationAddon(int id)
         {
-            return await _context.ReservationAddon.ToListAsync();
+
+            var addonId = _context.ReservationAddon.Where(a => a.ReservationId == id).ToList();
+          
+
+            var addons = _context.Addon.Where(a => a.AddonId == a.AddonId).ToList();
+
+            foreach (var a in addonId)
+            {
+               addons.Clear();
+               addons = _context.Addon.Where(b => b.AddonId == a.AddonId).ToList();
+
+            }
+            return addons;
+            //return await _context.ReservationAddon.ToListAsync();
         }
 
         // GET: api/ReservationAddons/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<ReservationAddon>> GetReservationAddon(int id)
-        {
-            var reservationAddon = await _context.ReservationAddon.FindAsync(id);
+        //[HttpGet("{id}")]
+        //public async Task<ActionResult<ReservationAddon>> GetReservationAddon(int id)
+        //{
+        //    var reservationAddon = await _context.ReservationAddon.FindAsync(id);
 
-            if (reservationAddon == null)
-            {
-                return NotFound();
-            }
+        //    if (reservationAddon == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return reservationAddon;
-        }
+        //    return reservationAddon;
+        //}
 
         // PUT: api/ReservationAddons/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
