@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HolidayMakerAPI.Data;
 using HolidayMakerAPI.Models;
+using System.Diagnostics;
 
 namespace HolidayMakerAPI.Controllers
 {
@@ -80,10 +81,31 @@ namespace HolidayMakerAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Reservation>> PostReservation(Reservation reservation)
         {
+            _context.Database.BeginTransaction();
+     
+      
             _context.Reservation.Add(reservation);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetReservation", new { id = reservation.ReservationId }, reservation);
+            //A list of addons is passed inside the Reservation object.
+            //Go through these and add the Id of the addon and reservation to the ReservationAddon table
+            foreach (Addon ra in reservation.Addons)
+            {
+                ReservationAddon tempRa = new ReservationAddon();
+                tempRa.ReservationId = reservation.ReservationId;
+                tempRa.AddonId = ra.AddonId;
+                _context.ReservationAddon.Add(tempRa);
+            }
+            await _context.SaveChangesAsync();
+
+            _context.Database.CommitTransaction();
+            
+            return Ok();
+            
+            //_context.Reservation.Add(reservation);
+            //await _context.SaveChangesAsync();
+
+            //return CreatedAtAction("GetReservation", new { id = reservation.ReservationId }, reservation);
         }
 
         // DELETE: api/Reservations/5
