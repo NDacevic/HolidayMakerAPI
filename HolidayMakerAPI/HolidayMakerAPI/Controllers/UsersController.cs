@@ -80,6 +80,13 @@ namespace HolidayMakerAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {
+            var users = _context.User.ToList();
+            foreach(User u in users)
+            {
+                if (user.Email == u.Email)
+                    return NotFound();
+
+            }
             _context.User.Add(user);
             await _context.SaveChangesAsync();
 
