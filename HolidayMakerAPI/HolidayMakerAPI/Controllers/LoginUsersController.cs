@@ -25,8 +25,8 @@ namespace HolidayMakerAPI.Controllers
         [HttpGet("{email}")]
         public async Task<ActionResult<User>> GetUser(string email)
         {
-            var user = await _context.User.FindAsync(email);
-
+            User user = await _context.User.Select(u=>u).Where(u=>u.Email==email).FirstOrDefaultAsync();
+            
             if (user == null)
             {
                 return NotFound();
