@@ -29,14 +29,21 @@ namespace HolidayMakerAPI.Controllers
             var addonId = _context.ReservationAddon.Where(a => a.ReservationId == id).ToList();
           
 
-            var addons = _context.Addon.Where(a => a.AddonId == a.AddonId).ToList();
-
-            foreach (var a in addonId)
+            var addons = _context.Addon.ToList();
+            if(addonId.Count!=0)
             {
-               addons.Clear();
-               addons = _context.Addon.Where(b => b.AddonId == a.AddonId).ToList();
+                foreach (var a in addonId)
+                {
+                    addons.Clear();
+                    addons = _context.Addon.Where(b => b.AddonId == a.AddonId).ToList();
 
+                }
             }
+            else
+            {
+                addons.Clear();
+            }
+          
             return addons;
             //return await _context.ReservationAddon.ToListAsync();
         }
