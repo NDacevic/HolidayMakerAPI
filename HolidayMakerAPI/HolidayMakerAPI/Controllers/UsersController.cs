@@ -84,7 +84,7 @@ namespace HolidayMakerAPI.Controllers
             foreach(User u in users)
             {
                 if (user.Email == u.Email)
-                    return NotFound();
+                    return BadRequest();
 
             }
             _context.User.Add(user);

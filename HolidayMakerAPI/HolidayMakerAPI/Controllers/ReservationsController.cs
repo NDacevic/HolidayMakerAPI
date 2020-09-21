@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using HolidayMakerAPI.Data;
 using HolidayMakerAPI.Models;
 using System.Diagnostics;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace HolidayMakerAPI.Controllers
 {
@@ -43,36 +44,37 @@ namespace HolidayMakerAPI.Controllers
             return reservation;
         }
 
-        // PUT: api/Reservations/5
+        // PATCH: api/Reservations/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutReservation(int id, Reservation reservation)
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> PatchReservation(int id, [FromBody] JsonPatchDocument<Reservation> jsonPatchReservation)
         {
-            if (id != reservation.ReservationId)
-            {
-                return BadRequest();
-            }
+            //Find reservation using id
+            Reservation updateReservation = await _context.Reservation.FirstOrDefaultAsync(x => x.ReservationId == id);
 
-            _context.Entry(reservation).State = EntityState.Modified;
+            if (updateReservation == null)
+                return NotFound();
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ReservationExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            //Add changes
+            jsonPatchReservation.ApplyTo(updateReservation, ModelState);
 
-            return NoContent();
+            //Error handling
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (!TryValidateModel(updateReservation))
+                return BadRequest(ModelState);
+
+            //Update object and save changes
+            _context.Update(updateReservation);
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
+
+
+       
         }
 
         // POST: api/Reservations
