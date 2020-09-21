@@ -44,9 +44,13 @@ namespace HolidayMakerAPI.Controllers
             return reservation;
         }
 
-        // PATCH: api/Reservations/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+
+        /// <summary>
+        /// Patches a reservation with the supplied information
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="jsonPatchStudent"></param>
+        /// <returns></returns>
         [HttpPatch("{id}")]
         public async Task<IActionResult> PatchReservation(int id, [FromBody] JsonPatchDocument<Reservation> jsonPatchReservation)
         {
