@@ -54,15 +54,18 @@ namespace HolidayMakerAPI.Controllers
         [HttpPatch("{id}")]
         public async Task<IActionResult> PatchReservation(int id, [FromBody] JsonPatchDocument<Reservation> jsonPatchReservation)
         {
+           
+
+
             //Find reservation using id
             Reservation updateReservation = await _context.Reservation.FirstOrDefaultAsync(x => x.ReservationId == id);
-
+            ReservationAddon resA = new ReservationAddon();
             if (updateReservation == null)
                 return NotFound();
 
             //Add changes
             jsonPatchReservation.ApplyTo(updateReservation, ModelState);
-
+          
             //Error handling
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -72,7 +75,12 @@ namespace HolidayMakerAPI.Controllers
 
             //Update object and save changes
             _context.Update(updateReservation);
-
+            foreach(var ra in updateReservation.Addons)
+            {
+                resA.AddonId = ra.AddonId;
+                resA.ReservationId = updateReservation.ReservationId;
+            }
+            _context.ReservationAddon.Add(resA);//TODO: This have to be fixed.
             await _context.SaveChangesAsync();
 
             return Ok();
