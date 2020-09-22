@@ -13,6 +13,6 @@ namespace HolidayMakerAPI
         public string Email { get; set; }
         public string Password { get; set; }
         public bool IsCompany { get; set; }
-        
+        public List<Home> Rentals { get; set; }
     }
 }
