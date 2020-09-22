@@ -28,13 +28,14 @@ namespace HolidayMakerAPI.Controllers
         {
             try
             {
-                return await _context.Reservation.ToListAsync();
+                var reservationList = await _context.Reservation.Select(x => x).ToListAsync();
+                return Ok(reservationList);
             }
             catch
             {
                 return BadRequest();
             }
-            
+
         }
 
         // GET: api/Reservations/5
