@@ -27,7 +27,15 @@ namespace HolidayMakerAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Reservation>>> GetReservation()
         {
-            return await _context.Reservation.ToListAsync();
+            try
+            {
+                return await _context.Reservation.ToListAsync();
+            }
+            catch
+            {
+                return BadRequest();
+            }
+            
         }
 
         // GET: api/Reservations/5
