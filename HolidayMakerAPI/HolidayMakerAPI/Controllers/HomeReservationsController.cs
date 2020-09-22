@@ -7,54 +7,54 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HolidayMakerAPI.Data;
 using HolidayMakerAPI.Models;
-using System.Diagnostics;
 
 namespace HolidayMakerAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ReservationsController : ControllerBase
+    public class HomeReservationsController : ControllerBase
     {
         private readonly HolidayMakerAPIContext _context;
 
-        public ReservationsController(HolidayMakerAPIContext context)
+        public HomeReservationsController(HolidayMakerAPIContext context)
         {
             _context = context;
         }
 
-        // GET: api/Reservations
+        // GET: api/HomeReservations
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Reservation>>> GetReservation()
         {
-            try
-            {
-                return await _context.Reservation.ToListAsync();
-            }
-            catch
-            {
-                return BadRequest();
-            }
-            
+            return await _context.Reservation.ToListAsync();
         }
 
-        // GET: api/Reservations/5
+        // GET: api/HomeReservations/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Reservation>> GetReservation(int id)
         {
-            var reservation = await _context.Reservation.FindAsync(id);
+            var res = await _context.Reservation.Where(r => r.HomeId == id).Select(r => r).ToListAsync();
+            List<Reservation> reservations = new List<Reservation>();
 
-            if (reservation == null)
+            if (res == null)
             {
                 return NotFound();
             }
+            else
+            {
+                foreach(var r in res)
+                {
+                    reservations.Add(r);
+                }
+            }
 
-            return reservation;
+            return Ok(reservations);
         }
 
-        // PUT: api/Reservations/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut("{id}")]
+
+// PUT: api/HomeReservations/5
+// To protect from overposting attacks, enable the specific properties you want to bind to, for
+// more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+[HttpPut("{id}")]
         public async Task<IActionResult> PutReservation(int id, Reservation reservation)
         {
             if (id != reservation.ReservationId)
@@ -83,40 +83,19 @@ namespace HolidayMakerAPI.Controllers
             return NoContent();
         }
 
-        // POST: api/Reservations
+        // POST: api/HomeReservations
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
         public async Task<ActionResult<Reservation>> PostReservation(Reservation reservation)
         {
-            _context.Database.BeginTransaction();
-     
-      
             _context.Reservation.Add(reservation);
             await _context.SaveChangesAsync();
 
-            //A list of addons is passed inside the Reservation object.
-            //Go through these and add the Id of the addon and reservation to the ReservationAddon table
-            foreach (Addon ra in reservation.Addons)
-            {
-                ReservationAddon tempRa = new ReservationAddon();
-                tempRa.ReservationId = reservation.ReservationId;
-                tempRa.AddonId = ra.AddonId;
-                _context.ReservationAddon.Add(tempRa);
-            }
-            await _context.SaveChangesAsync();
-
-            _context.Database.CommitTransaction();
-            
-            return Ok();
-            
-            //_context.Reservation.Add(reservation);
-            //await _context.SaveChangesAsync();
-
-            //return CreatedAtAction("GetReservation", new { id = reservation.ReservationId }, reservation);
+            return CreatedAtAction("GetReservation", new { id = reservation.ReservationId }, reservation);
         }
 
-        // DELETE: api/Reservations/5
+        // DELETE: api/HomeReservations/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<Reservation>> DeleteReservation(int id)
         {
