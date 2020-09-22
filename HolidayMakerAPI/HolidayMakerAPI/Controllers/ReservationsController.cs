@@ -54,18 +54,45 @@ namespace HolidayMakerAPI.Controllers
         [HttpPatch("{id}")]
         public async Task<IActionResult> PatchReservation(int id, [FromBody] JsonPatchDocument<Reservation> jsonPatchReservation)
         {
-           
 
-
+            _context.Database.BeginTransaction();
             //Find reservation using id
             Reservation updateReservation = await _context.Reservation.FirstOrDefaultAsync(x => x.ReservationId == id);
-            ReservationAddon resA = new ReservationAddon();
+            var addonlist = await _context.ReservationAddon.Where(x => x.ReservationId == id).ToListAsync();
+            updateReservation.ReservationAddons = new List<ReservationAddon>();
+           
+            //updateReservation.Addons = new List<Addon>();
+            List<ReservationAddon> tempList = new List<ReservationAddon>();
+
             if (updateReservation == null)
                 return NotFound();
 
             //Add changes
             jsonPatchReservation.ApplyTo(updateReservation, ModelState);
-          
+
+            if (updateReservation.Addons.Count != 0)
+            {
+                foreach (var r in updateReservation.Addons)
+                {
+                    ReservationAddon resAddon = new ReservationAddon();
+                    //tempList.Add(new ReservationAddon() { AddonId = r.AddonId, ReservationId = updateReservation.ReservationId });
+                      resAddon.AddonId = r.AddonId;
+                      resAddon.ReservationId = id;
+                      updateReservation.ReservationAddons.Add(resAddon);
+                }
+                //     updateReservation.ReservationAddons.AddRange(tempList);
+                //((tempList.Where(x => addonlist.Any(y => y.ReservationId == x.ReservationId))).ToList()).ForEach(x => tempList.Remove(x));
+
+            }
+           else
+           {
+                foreach(ReservationAddon r in addonlist)
+                {
+                   _context.ReservationAddon.Remove(r);
+                }
+           }
+
+
             //Error handling
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -73,16 +100,10 @@ namespace HolidayMakerAPI.Controllers
             if (!TryValidateModel(updateReservation))
                 return BadRequest(ModelState);
 
-            //Update object and save changes
             _context.Update(updateReservation);
-            foreach(var ra in updateReservation.Addons)
-            {
-                resA.AddonId = ra.AddonId;
-                resA.ReservationId = updateReservation.ReservationId;
-            }
-            _context.ReservationAddon.Add(resA);//TODO: This have to be fixed.
             await _context.SaveChangesAsync();
 
+            _context.Database.CommitTransaction();
             return Ok();
 
 
