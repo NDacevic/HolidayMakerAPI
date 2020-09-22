@@ -33,6 +33,6 @@ namespace HolidayMakerAPI
         public bool AllowPets { get; set; }
         public int NumberOfRatings { get; set; }
         public int SumOfRatings { get; set; }
-
+        public int UserId { get; set; }
     }
 }
