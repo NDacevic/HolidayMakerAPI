@@ -66,11 +66,10 @@ namespace HolidayMakerAPI.Controllers
             _context.Database.BeginTransaction();
             //Find reservation using id
             Reservation updateReservation = await _context.Reservation.FirstOrDefaultAsync(x => x.ReservationId == id);
-            var addonlist = await _context.ReservationAddon.Where(x => x.ReservationId == id).ToListAsync();
+            //Populate addonlist with all addons belonging to the specific reservation id.
+            var addonList = await _context.ReservationAddon.Where(x => x.ReservationId == id).ToListAsync();
+            //Instatiating ReservationAddon list so that we can post to the composite table
             updateReservation.ReservationAddons = new List<ReservationAddon>();
-           
-    
-            //List<ReservationAddon> tempList = new List<ReservationAddon>();
 
             if (updateReservation == null)
                 return NotFound();
@@ -78,28 +77,25 @@ namespace HolidayMakerAPI.Controllers
             //Add changes
             jsonPatchReservation.ApplyTo(updateReservation, ModelState);
 
+            //We handle the addons that belong to the reservation
             if (updateReservation.Addons.Count != 0)
             {
                 foreach (var r in updateReservation.Addons)
                 {
                     ReservationAddon resAddon = new ReservationAddon();
-                    //tempList.Add(new ReservationAddon() { AddonId = r.AddonId, ReservationId = updateReservation.ReservationId });
+               
                       resAddon.AddonId = r.AddonId;
                       resAddon.ReservationId = id;
                       updateReservation.ReservationAddons.Add(resAddon);
                 }
-                //     updateReservation.ReservationAddons.AddRange(tempList);
-                //((tempList.Where(x => addonlist.Any(y => y.ReservationId == x.ReservationId))).ToList()).ForEach(x => tempList.Remove(x));
-
             }
            else
            {
-                foreach(ReservationAddon r in addonlist)
+                foreach(ReservationAddon r in addonList)
                 {
                    _context.ReservationAddon.Remove(r);
                 }
            }
-
 
             //Error handling
             if (!ModelState.IsValid)
@@ -113,9 +109,6 @@ namespace HolidayMakerAPI.Controllers
 
             _context.Database.CommitTransaction();
             return Ok();
-
-
-       
         }
 
         // POST: api/Reservations
