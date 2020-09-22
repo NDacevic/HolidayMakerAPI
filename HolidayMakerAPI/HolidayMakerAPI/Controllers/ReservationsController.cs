@@ -61,8 +61,8 @@ namespace HolidayMakerAPI.Controllers
             var addonlist = await _context.ReservationAddon.Where(x => x.ReservationId == id).ToListAsync();
             updateReservation.ReservationAddons = new List<ReservationAddon>();
            
-            //updateReservation.Addons = new List<Addon>();
-            List<ReservationAddon> tempList = new List<ReservationAddon>();
+    
+            //List<ReservationAddon> tempList = new List<ReservationAddon>();
 
             if (updateReservation == null)
                 return NotFound();
