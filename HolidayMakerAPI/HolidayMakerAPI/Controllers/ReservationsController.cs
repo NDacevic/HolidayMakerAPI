@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using HolidayMakerAPI.Data;
 using HolidayMakerAPI.Models;
 using System.Diagnostics;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace HolidayMakerAPI.Controllers
 {
@@ -51,36 +52,63 @@ namespace HolidayMakerAPI.Controllers
             return reservation;
         }
 
-        // PUT: api/Reservations/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutReservation(int id, Reservation reservation)
+
+        /// <summary>
+        /// Patches a reservation with the supplied information
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="jsonPatchStudent"></param>
+        /// <returns></returns>
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> PatchReservation(int id, [FromBody] JsonPatchDocument<Reservation> jsonPatchReservation)
         {
-            if (id != reservation.ReservationId)
-            {
-                return BadRequest();
-            }
 
-            _context.Entry(reservation).State = EntityState.Modified;
+            _context.Database.BeginTransaction();
+            //Find reservation using id
+            Reservation updateReservation = await _context.Reservation.FirstOrDefaultAsync(x => x.ReservationId == id);
+            //Populate addonlist with all addons belonging to the specific reservation id.
+            var addonList = await _context.ReservationAddon.Where(x => x.ReservationId == id).ToListAsync();
+            //Instatiating ReservationAddon list so that we can post to the composite table
+            updateReservation.ReservationAddons = new List<ReservationAddon>();
 
-            try
+            if (updateReservation == null)
+                return NotFound();
+
+            //Add changes
+            jsonPatchReservation.ApplyTo(updateReservation, ModelState);
+
+            //We handle the addons that belong to the reservation
+            if (updateReservation.Addons.Count != 0)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ReservationExists(id))
+                foreach (var r in updateReservation.Addons)
                 {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
+                    ReservationAddon resAddon = new ReservationAddon();
+               
+                      resAddon.AddonId = r.AddonId;
+                      resAddon.ReservationId = id;
+                      updateReservation.ReservationAddons.Add(resAddon);
                 }
             }
+           else
+           {
+                foreach(ReservationAddon r in addonList)
+                {
+                   _context.ReservationAddon.Remove(r);
+                }
+           }
 
-            return NoContent();
+            //Error handling
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (!TryValidateModel(updateReservation))
+                return BadRequest(ModelState);
+
+            _context.Update(updateReservation);
+            await _context.SaveChangesAsync();
+
+            _context.Database.CommitTransaction();
+            return Ok();
         }
 
         // POST: api/Reservations
