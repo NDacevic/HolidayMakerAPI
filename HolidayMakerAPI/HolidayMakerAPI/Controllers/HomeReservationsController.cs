@@ -27,7 +27,11 @@ namespace HolidayMakerAPI.Controllers
         {
             return await _context.Reservation.ToListAsync();
         }
-
+        /// <summary>
+        /// Method returns a list of reservations based on homeId. Will be used for checking which dates the home is occupied and is not to be booked.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         // GET: api/HomeReservations/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Reservation>> GetReservation(int id)
