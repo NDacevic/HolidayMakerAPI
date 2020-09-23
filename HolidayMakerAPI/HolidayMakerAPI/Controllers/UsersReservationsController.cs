@@ -27,8 +27,8 @@ namespace HolidayMakerAPI.Controllers
         public async Task<IEnumerable<Reservation>> GetUserReservations(int id)
         {
             
-            var userReservations = _context.Reservation.Where(r => r.User.UserId == id)
-                .Include(h => h.Home).ToList();
+            var userReservations = await _context.Reservation.Where(r => r.User.UserId == id)
+                .Include(h => h.Home).ToListAsync();
                 
             foreach(Reservation r in userReservations)
             {

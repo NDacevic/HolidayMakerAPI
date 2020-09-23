@@ -32,14 +32,14 @@ namespace HolidayMakerAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<List<Home>>> GetHomes(int id)
         {
-            var home = await _context.Home.Where(h=>h.User.UserId==id).ToListAsync();
+            var homes = await _context.Home.Where(h=>h.User.UserId==id).ToListAsync();
 
-            if (home == null)
+            if (homes == null)
             {
                 return NotFound();
             }
 
-            return Ok(home);
+            return Ok(homes);
         }
 
         // PUT: api/UserHomes/5
