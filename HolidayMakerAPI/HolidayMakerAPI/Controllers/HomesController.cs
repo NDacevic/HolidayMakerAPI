@@ -90,6 +90,12 @@ namespace HolidayMakerAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Home>> DeleteHome(int id)
         {
+            _context.Database.BeginTransaction();
+
+            var homeReservations = await _context.Reservation.Where(r => r.HomeId == id).ToListAsync();
+            _context.Reservation.RemoveRange(homeReservations);
+            await _context.SaveChangesAsync();
+
             var home = await _context.Home.FindAsync(id);
             if (home == null)
             {
@@ -99,6 +105,7 @@ namespace HolidayMakerAPI.Controllers
             _context.Home.Remove(home);
             await _context.SaveChangesAsync();
 
+            _context.Database.CommitTransaction();
             return home;
         }
 
