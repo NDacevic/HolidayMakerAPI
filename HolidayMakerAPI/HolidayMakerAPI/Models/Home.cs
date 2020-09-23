@@ -36,5 +36,6 @@ namespace HolidayMakerAPI
         public int SumOfRatings { get; set; }
         [AllowNull]
         public User User { get; set; }
+        public int UserId { get; set; }
     }
 }
