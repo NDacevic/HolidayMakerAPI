@@ -101,9 +101,9 @@ namespace HolidayMakerAPI.Controllers
                 for (int j = 0; j < reservationsPerHome.Count; j++)
                 {
                     //if this home's current iteration's reservation's StartDate is BEFORE the Search's EndDate AND AFTER the Search's StartDate - then the Home is not available when wanted
-                    if ((reservationsPerHome[j].StartDate < searchParameters.EndDate && reservationsPerHome[j].StartDate > searchParameters.StartDate) ||
+                    if ((reservationsPerHome[j].StartDate.Date < searchParameters.EndDate.Date && reservationsPerHome[j].StartDate.Date >= searchParameters.StartDate.Date) ||
                         //OR this home's current iteration's reservation's EndDate is AFTER the Search's StartDate AND BEFORE the Search's EndDate - then the Home is not available when wanted
-                        (reservationsPerHome[j].EndDate>searchParameters.StartDate && reservationsPerHome[j].EndDate<searchParameters.EndDate))
+                        (reservationsPerHome[j].EndDate.Date>searchParameters.StartDate.Date && reservationsPerHome[j].EndDate.Date<searchParameters.EndDate.Date))
                     {
                         //The home is not available when wanted, remove from list
                         selectedHomes.Remove(selectedHomes[i]);
