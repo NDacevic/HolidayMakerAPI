@@ -26,9 +26,9 @@ namespace HolidayMakerAPI.Controllers
         [HttpGet("{id}")]
         public async Task<IEnumerable<Reservation>> GetUserReservations(int id)
         {
-            //TODO: Check table of reservations and get all reservations linked with the user id
-            var userReservations = _context.Reservation.Where(r => r.User.UserId == id)
-                .Include(h => h.Home).ToList();
+            
+            var userReservations = await _context.Reservation.Where(r => r.User.UserId == id)
+                .Include(h => h.Home).ToListAsync();
                 
             foreach(Reservation r in userReservations)
             {

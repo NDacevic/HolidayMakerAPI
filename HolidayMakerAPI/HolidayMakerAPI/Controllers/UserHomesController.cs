@@ -12,37 +12,37 @@ namespace HolidayMakerAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class HomesController : ControllerBase
+    public class UserHomesController : ControllerBase
     {
         private readonly HolidayMakerAPIContext _context;
 
-        public HomesController(HolidayMakerAPIContext context)
+        public UserHomesController(HolidayMakerAPIContext context)
         {
             _context = context;
         }
 
-        // GET: api/Homes
+        // GET: api/UserHomes
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Home>>> GetHome()
         {
             return await _context.Home.ToListAsync();
         }
 
-        // GET: api/Homes/5
+        // GET: api/UserHomes/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Home>> GetHome(int id)
+        public async Task<ActionResult<List<Home>>> GetHomes(int id)
         {
-            var home = await _context.Home.FindAsync(id);
+            var homes = await _context.Home.Where(h=>h.User.UserId==id).ToListAsync();
 
-            if (home == null)
+            if (homes == null)
             {
                 return NotFound();
             }
 
-            return home;
+            return Ok(homes);
         }
 
-        // PUT: api/Homes/5
+        // PUT: api/UserHomes/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
@@ -74,7 +74,7 @@ namespace HolidayMakerAPI.Controllers
             return NoContent();
         }
 
-        // POST: api/Homes
+        // POST: api/UserHomes
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
@@ -86,16 +86,10 @@ namespace HolidayMakerAPI.Controllers
             return CreatedAtAction("GetHome", new { id = home.HomeId }, home);
         }
 
-        // DELETE: api/Homes/5
+        // DELETE: api/UserHomes/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<Home>> DeleteHome(int id)
         {
-            _context.Database.BeginTransaction();
-
-            var homeReservations = await _context.Reservation.Where(r => r.HomeId == id).ToListAsync();
-            _context.Reservation.RemoveRange(homeReservations);
-            await _context.SaveChangesAsync();
-
             var home = await _context.Home.FindAsync(id);
             if (home == null)
             {
@@ -105,7 +99,6 @@ namespace HolidayMakerAPI.Controllers
             _context.Home.Remove(home);
             await _context.SaveChangesAsync();
 
-            _context.Database.CommitTransaction();
             return home;
         }
 

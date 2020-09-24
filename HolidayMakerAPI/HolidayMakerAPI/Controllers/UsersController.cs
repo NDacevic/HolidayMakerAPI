@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HolidayMakerAPI;
 using HolidayMakerAPI.Data;
+using System.Transactions;
+using HolidayMakerAPI.Models;
 
 namespace HolidayMakerAPI.Controllers
 {
@@ -84,7 +86,7 @@ namespace HolidayMakerAPI.Controllers
             foreach(User u in users)
             {
                 if (user.Email == u.Email)
-                    return NotFound();
+                    return BadRequest();
 
             }
             _context.User.Add(user);
@@ -97,6 +99,19 @@ namespace HolidayMakerAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<User>> DeleteUser(int id)
         {
+            //Must delete the users all reservations before the user itself can be deleted
+            var userReservations = await _context.Reservation.Where(r => r.UserId == id).Select(r=>r).ToListAsync();
+
+            _context.Database.BeginTransaction();
+
+            //TODO: test what happens if there are no reservations
+            foreach  (Reservation reservation in userReservations)
+            {
+                _context.Reservation.Remove(reservation);
+                await _context.SaveChangesAsync();
+            }
+            
+
             var user = await _context.User.FindAsync(id);
             if (user == null)
             {
@@ -106,7 +121,9 @@ namespace HolidayMakerAPI.Controllers
             _context.User.Remove(user);
             await _context.SaveChangesAsync();
 
-            return user;
+            _context.Database.CommitTransaction();
+
+            return Ok(user);
         }
 
         private bool UserExists(int id)

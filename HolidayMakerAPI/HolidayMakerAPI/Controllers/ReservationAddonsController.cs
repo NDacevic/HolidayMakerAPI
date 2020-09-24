@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HolidayMakerAPI;
 using HolidayMakerAPI.Data;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace HolidayMakerAPI.Controllers
 {
@@ -27,24 +28,29 @@ namespace HolidayMakerAPI.Controllers
         {
 
             var addonId = _context.ReservationAddon.Where(a => a.ReservationId == id).ToList();
+            List<Addon> tempList = new List<Addon>();
+            
           
-
-            var addons = _context.Addon.ToList();
             if(addonId.Count!=0)
             {
                 foreach (var a in addonId)
                 {
-                    addons.Clear();
-                    addons = _context.Addon.Where(b => b.AddonId == a.AddonId).ToList();
 
+                    var addons = _context.Addon.Where(x=>x.AddonId==a.AddonId).ToList();
+                   
+                    foreach(var x in addons)
+                    {
+                        tempList.Add(x);
+                    }
                 }
+             
             }
             else
             {
-                addons.Clear();
+                tempList.Clear();
             }
           
-            return addons;
+            return tempList;
             //return await _context.ReservationAddon.ToListAsync();
         }
 
@@ -65,35 +71,38 @@ namespace HolidayMakerAPI.Controllers
         // PUT: api/ReservationAddons/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutReservationAddon(int id, ReservationAddon reservationAddon)
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> PatchReservationAddon(int id, [FromBody] JsonPatchDocument<ReservationAddon> jsonPatchReservation)
         {
-            if (id != reservationAddon.AddonId)
-            {
-                return BadRequest();
-            }
 
-            _context.Entry(reservationAddon).State = EntityState.Modified;
+            //Find reservation using id
+            ReservationAddon updateReservationAddon = await _context.ReservationAddon.FirstOrDefaultAsync(x => x.ReservationId == id);
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ReservationAddonExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+     
+            if (updateReservationAddon == null)
+                return NotFound();
 
-            return NoContent();
+            //Add changes
+            jsonPatchReservation.ApplyTo(updateReservationAddon, ModelState);
+
+            //Error handling
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (!TryValidateModel(updateReservationAddon))
+                return BadRequest(ModelState);
+
+
+            //Update object and save changes
+            _context.Update(updateReservationAddon);
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
+
+
+
         }
-
         // POST: api/ReservationAddons
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
